@@ -1,43 +1,44 @@
 /**
  * ================================================================
- * MAIN CLASS – UseCase12TrainConsistMgmt
+ * MAIN CLASS – UseCase13TrainConsistMgmt
  * ================================================================
  *
- * Use Case 12: Safety Compliance Check for Goods Bogies
+ * Use Case 13: Performance Comparison (Loops vs Streams)
  *
  * Description:
- * This class enforces domain safety rules on goods bogies.
+ * This class compares execution time of loop-based filtering
+ * versus stream-based filtering using System.nanoTime().
  *
  * At this stage, the application:
- *  - Creates goods bogie list
- *  - Converts list into stream
- *  - Applies safety validation rule
- *  - Checks compliance using allMatch()
- *  - Displays safety status
+ *  - Creates bogie test dataset
+ *  - Measures loop execution time
+ *  - Measures stream execution time
+ *  - Calculates elapsed duration
+ *  - Displays performance results
  *
- * This maps real-world cargo safety rules using Streams.
+ * This maps performance benchmarking using high-resolution timing.
  *
  * @author Developer
- * @version 12.0
+ * @version 13.0
  */
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UseCase12TrainConsistMgmt {
+public class TrainConsistManagementApp {
 
     // ================================================================
-    // Goods Bogie Model
+    // Bogie Model
     // ================================================================
-    static class GoodsBogie {
+    static class Bogie {
 
-        String type;   // Type of bogie (e.g., Closed, Open, Tanker)
-        String cargo;  // Cargo carried (e.g., Coal, Chemicals)
+        String type;   // Type of bogie
+        int capacity;  // Capacity in tons
 
         // Constructor
-        GoodsBogie(String type, String cargo) {
+        Bogie(String type, int capacity) {
             this.type = type;
-            this.cargo = cargo;
+            this.capacity = capacity;
         }
     }
 
@@ -46,48 +47,56 @@ public class UseCase12TrainConsistMgmt {
     // ================================================================
     public static void main(String[] args) {
 
-        // Display heading
         System.out.println("=====================================================");
-        System.out.println(" UC12 - Safety Compliance Check for Goods Bogies ");
+        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
         System.out.println("=====================================================\n");
 
         // --------------------------------------------------------------
-        // Step 1: Create goods bogie list
+        // Step 1: Create large test dataset
         // --------------------------------------------------------------
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
+        List<Bogie> bogies = new ArrayList<>();
 
-        goodsBogies.add(new GoodsBogie("Closed", "Electronics"));
-        goodsBogies.add(new GoodsBogie("Open", "Coal"));
-        goodsBogies.add(new GoodsBogie("Tanker", "Chemicals"));
-        goodsBogies.add(new GoodsBogie("Closed", "Food"));
-
-        // --------------------------------------------------------------
-        // Step 2: Apply safety validation rule using Streams
-        // Rule:
-        // - Chemicals must be in Tanker
-        // - Food must be in Closed
-        // --------------------------------------------------------------
-        boolean isSafe = goodsBogies.stream().allMatch(bogie -> {
-
-            if (bogie.cargo.equalsIgnoreCase("Chemicals")) {
-                return bogie.type.equalsIgnoreCase("Tanker");
+        for (int i = 0; i < 1000000; i++) {
+            if (i % 2 == 0) {
+                bogies.add(new Bogie("Heavy", 80));
+            } else {
+                bogies.add(new Bogie("Light", 40));
             }
-
-            if (bogie.cargo.equalsIgnoreCase("Food")) {
-                return bogie.type.equalsIgnoreCase("Closed");
-            }
-
-            // Default: safe for other cargo types
-            return true;
-        });
-
-        // --------------------------------------------------------------
-        // Step 3: Display safety status
-        // --------------------------------------------------------------
-        if (isSafe) {
-            System.out.println("All goods bogies are SAFETY COMPLIANT ✅");
-        } else {
-            System.out.println("Safety violation detected ❌");
         }
+
+        // --------------------------------------------------------------
+        // Step 2: Loop-based filtering (capacity > 50)
+        // --------------------------------------------------------------
+        long startLoop = System.nanoTime();
+
+        List<Bogie> loopResult = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.capacity > 50) {
+                loopResult.add(b);
+            }
+        }
+
+        long endLoop = System.nanoTime();
+        long loopTime = endLoop - startLoop;
+
+        // --------------------------------------------------------------
+        // Step 3: Stream-based filtering (capacity > 50)
+        // --------------------------------------------------------------
+        long startStream = System.nanoTime();
+
+        List<Bogie> streamResult = bogies.stream()
+                .filter(b -> b.capacity > 50)
+                .toList();
+
+        long endStream = System.nanoTime();
+        long streamTime = endStream - startStream;
+
+        // --------------------------------------------------------------
+        // Step 4: Display performance results
+        // --------------------------------------------------------------
+        System.out.println("Loop Execution Time (ns): " + loopTime);
+        System.out.println("Stream Execution Time (ns): " + streamTime);
+
+        System.out.println("\nUC13 performance benchmarking completed...");
     }
 }
