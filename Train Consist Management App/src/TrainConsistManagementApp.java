@@ -1,87 +1,67 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * =========================================================================
- * MAIN CLASS - UseCase14TrainConsistMgmnt
- * =========================================================================
- *
- * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
- *
- * Description:
- * This program prevents creation of passenger bogies with
- * invalid seating capacity using a custom exception.
- *
- * Features:
- * - Defines a custom exception
- * - Validates capacity inside constructor
- * - Throws exception if capacity <= 0
- * - Ensures safe execution (no crash)
- *
- * =========================================================================
+ * ============================================================================
+ * MAIN CLASS - UseCase20TrainConsistMgmnt
+ * ============================================================================
+ * * Use Case 20: Prevent Search on Empty Collection
+ * * Description:
+ * This class demonstrates defensive programming by throwing an 
+ * IllegalStateException if a search is attempted on an empty bogie list.
+ * * At this stage, the application:
+ * - Initializes an empty bogie collection
+ * - Validates the state of the collection before searching
+ * - Throws IllegalStateException if empty
+ * - Provides a meaningful error message
+ * * This maps the Fail-Fast principle and robust state validation.
+ * * @author Developer
+ * @version 20.0
  */
+public class UseCase20TrainConsistMgmnt {
 
-public class TrainConsistManagementApp {
-
-    // ================================================================
-    // CUSTOM EXCEPTION CLASS
-    // ================================================================
-    // This exception is thrown when invalid capacity is given
-    static class InvalidCapacityException extends Exception {
-
-        // Constructor to pass custom error message
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
-    }
-
-    // ================================================================
-    // PASSENGER BOGIE CLASS
-    // ================================================================
-    static class PassengerBogie {
-
-        String type;     // Type of bogie (e.g., Sleeper, AC)
-        int capacity;    // Seating capacity
-
-        // Constructor with validation
-        public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-
-            // Validate capacity
-            if (capacity <= 0) {
-                // Throw custom exception if invalid
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-
-            // Assign values if valid
-            this.type = type;
-            this.capacity = capacity;
-        }
-
-        // Method to display bogie details
-        public void display() {
-            System.out.println("Created Bogie: " + type + " -> " + capacity);
-        }
-    }
-
-    // ================================================================
-    // MAIN METHOD
-    // ================================================================
     public static void main(String[] args) {
 
-        // Try block to handle exceptions safely
+        System.out.println("==============================================");
+        System.out.println(" UC20 - Defensive State Validation ");
+        System.out.println("==============================================\n");
+
+        // Step 1: Initialize an empty collection (simulating a train with no bogies)
+        List<String> trainConsist = new ArrayList<>();
+        String searchKey = "BG309";
+
         try {
-            // Valid bogie creation
-            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-            b1.display();
-
-            // Invalid bogie creation (will throw exception)
-            PassengerBogie b2 = new PassengerBogie("AC", 0);
-            b2.display(); // This line will not execute
-
-        } catch (InvalidCapacityException e) {
-
-            // Handle exception and print message
-            System.out.println("Error: " + e.getMessage());
+            // Step 2: Perform the search operation
+            performSearch(trainConsist, searchKey);
+            
+        } catch (IllegalStateException e) {
+            // Step 5: User receives a meaningful error message
+            System.err.println("CRITICAL ERROR: " + e.getMessage());
         }
 
-        // Program continues normally
-        System.out.println("UC14 exception handling completed...");
+        System.out.println("\nUC20 execution flow completed.");
+    }
+
+    /**
+     * Searches for a bogie ID but validates the train state first.
+     */
+    public static void performSearch(List<String> consist, String key) {
+        System.out.println("Initiating search for: " + key + "...");
+
+        // ---- STATE VALIDATION (Defensive Programming) ----
+        // Step 2 & 3: Check if empty and throw exception early
+        if (consist.isEmpty()) {
+            throw new IllegalStateException("Search failed: The train consist is empty. Please add bogies before searching.");
+        }
+
+        // This part of the code is never reached if the list is empty
+        // (Fail-Fast Principle)
+        for (String bogie : consist) {
+            if (bogie.equals(key)) {
+                System.out.println("Bogie found!");
+                return;
+            }
+        }
+        System.out.println("Bogie not found.");
     }
 }
