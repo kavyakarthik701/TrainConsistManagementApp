@@ -1,44 +1,62 @@
 /**
- * ================================================================
- * MAIN CLASS – UseCase13TrainConsistMgmt
- * ================================================================
+ * =========================================================================
+ * MAIN CLASS - UseCase14TrainConsistMgmnt
+ * =========================================================================
  *
- * Use Case 13: Performance Comparison (Loops vs Streams)
+ * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
  *
  * Description:
- * This class compares execution time of loop-based filtering
- * versus stream-based filtering using System.nanoTime().
+ * This program prevents creation of passenger bogies with
+ * invalid seating capacity using a custom exception.
  *
- * At this stage, the application:
- *  - Creates bogie test dataset
- *  - Measures loop execution time
- *  - Measures stream execution time
- *  - Calculates elapsed duration
- *  - Displays performance results
+ * Features:
+ * - Defines a custom exception
+ * - Validates capacity inside constructor
+ * - Throws exception if capacity <= 0
+ * - Ensures safe execution (no crash)
  *
- * This maps performance benchmarking using high-resolution timing.
- *
- * @author Developer
- * @version 13.0
+ * =========================================================================
  */
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TrainConsistManagementApp {
 
     // ================================================================
-    // Bogie Model
+    // CUSTOM EXCEPTION CLASS
     // ================================================================
-    static class Bogie {
+    // This exception is thrown when invalid capacity is given
+    static class InvalidCapacityException extends Exception {
 
-        String type;   // Type of bogie
-        int capacity;  // Capacity in tons
+        // Constructor to pass custom error message
+        public InvalidCapacityException(String message) {
+            super(message);
+        }
+    }
 
-        // Constructor
-        Bogie(String type, int capacity) {
+    // ================================================================
+    // PASSENGER BOGIE CLASS
+    // ================================================================
+    static class PassengerBogie {
+
+        String type;     // Type of bogie (e.g., Sleeper, AC)
+        int capacity;    // Seating capacity
+
+        // Constructor with validation
+        public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+
+            // Validate capacity
+            if (capacity <= 0) {
+                // Throw custom exception if invalid
+                throw new InvalidCapacityException("Capacity must be greater than zero");
+            }
+
+            // Assign values if valid
             this.type = type;
             this.capacity = capacity;
+        }
+
+        // Method to display bogie details
+        public void display() {
+            System.out.println("Created Bogie: " + type + " -> " + capacity);
         }
     }
 
@@ -47,56 +65,23 @@ public class TrainConsistManagementApp {
     // ================================================================
     public static void main(String[] args) {
 
-        System.out.println("=====================================================");
-        System.out.println(" UC13 - Performance Comparison (Loops vs Streams) ");
-        System.out.println("=====================================================\n");
+        // Try block to handle exceptions safely
+        try {
+            // Valid bogie creation
+            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
+            b1.display();
 
-        // --------------------------------------------------------------
-        // Step 1: Create large test dataset
-        // --------------------------------------------------------------
-        List<Bogie> bogies = new ArrayList<>();
+            // Invalid bogie creation (will throw exception)
+            PassengerBogie b2 = new PassengerBogie("AC", 0);
+            b2.display(); // This line will not execute
 
-        for (int i = 0; i < 1000000; i++) {
-            if (i % 2 == 0) {
-                bogies.add(new Bogie("Heavy", 80));
-            } else {
-                bogies.add(new Bogie("Light", 40));
-            }
+        } catch (InvalidCapacityException e) {
+
+            // Handle exception and print message
+            System.out.println("Error: " + e.getMessage());
         }
 
-        // --------------------------------------------------------------
-        // Step 2: Loop-based filtering (capacity > 50)
-        // --------------------------------------------------------------
-        long startLoop = System.nanoTime();
-
-        List<Bogie> loopResult = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.capacity > 50) {
-                loopResult.add(b);
-            }
-        }
-
-        long endLoop = System.nanoTime();
-        long loopTime = endLoop - startLoop;
-
-        // --------------------------------------------------------------
-        // Step 3: Stream-based filtering (capacity > 50)
-        // --------------------------------------------------------------
-        long startStream = System.nanoTime();
-
-        List<Bogie> streamResult = bogies.stream()
-                .filter(b -> b.capacity > 50)
-                .toList();
-
-        long endStream = System.nanoTime();
-        long streamTime = endStream - startStream;
-
-        // --------------------------------------------------------------
-        // Step 4: Display performance results
-        // --------------------------------------------------------------
-        System.out.println("Loop Execution Time (ns): " + loopTime);
-        System.out.println("Stream Execution Time (ns): " + streamTime);
-
-        System.out.println("\nUC13 performance benchmarking completed...");
+        // Program continues normally
+        System.out.println("UC14 exception handling completed...");
     }
 }
