@@ -1,58 +1,93 @@
-import java.util.Scanner;
-import java.util.regex.Pattern;
-
 /**
- * ============================================================
- * MAIN CLASS - UseCase11TrainConsistMgmt
- * ============================================================
+ * ================================================================
+ * MAIN CLASS – UseCase12TrainConsistMgmt
+ * ================================================================
  *
- * Use Case 11: Validate Train ID and Cargo Code
+ * Use Case 12: Safety Compliance Check for Goods Bogies
  *
  * Description:
- * This class validates input formats using Regular Expressions.
+ * This class enforces domain safety rules on goods bogies.
  *
  * At this stage, the application:
- * - Accepts Train ID input
- * - Accepts Cargo Code input
- * - Applies regex validation
- * - Displays validation result
+ *  - Creates goods bogie list
+ *  - Converts list into stream
+ *  - Applies safety validation rule
+ *  - Checks compliance using allMatch()
+ *  - Displays safety status
  *
- * This maps format validation logic using Pattern matching.
+ * This maps real-world cargo safety rules using Streams.
  *
  * @author Developer
- * @version 11.0
+ * @version 12.0
  */
 
-public class TrainConsistManagementApp {
+import java.util.ArrayList;
+import java.util.List;
 
+public class UseCase12TrainConsistMgmt {
+
+    // ================================================================
+    // Goods Bogie Model
+    // ================================================================
+    static class GoodsBogie {
+
+        String type;   // Type of bogie (e.g., Closed, Open, Tanker)
+        String cargo;  // Cargo carried (e.g., Coal, Chemicals)
+
+        // Constructor
+        GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.cargo = cargo;
+        }
+    }
+
+    // ================================================================
+    // MAIN METHOD
+    // ================================================================
     public static void main(String[] args) {
-        System.out.println("========================================");
-        System.out.println(" UC11 - Validate Train ID and Cargo Code ");
-        System.out.println("========================================\n");
 
-        Scanner scanner = new Scanner(System.in);
+        // Display heading
+        System.out.println("=====================================================");
+        System.out.println(" UC12 - Safety Compliance Check for Goods Bogies ");
+        System.out.println("=====================================================\n");
 
-        // Accept input
-        System.out.print("Enter Train ID (Format: TRN-1234): ");
-        String trainId = scanner.nextLine();
+        // --------------------------------------------------------------
+        // Step 1: Create goods bogie list
+        // --------------------------------------------------------------
+        List<GoodsBogie> goodsBogies = new ArrayList<>();
 
-        System.out.print("Enter Cargo Code (Format: PET-AB): ");
-        String cargoCode = scanner.nextLine();
+        goodsBogies.add(new GoodsBogie("Closed", "Electronics"));
+        goodsBogies.add(new GoodsBogie("Open", "Coal"));
+        goodsBogies.add(new GoodsBogie("Tanker", "Chemicals"));
+        goodsBogies.add(new GoodsBogie("Closed", "Food"));
 
-        // ---- DEFINE REGEX RULES ----
-        Pattern trainIdPattern = Pattern.compile("^TRN-\\d{4}$");
-        Pattern cargoCodePattern = Pattern.compile("^[A-Z]{3}-[A-Z]{2}$");
+        // --------------------------------------------------------------
+        // Step 2: Apply safety validation rule using Streams
+        // Rule:
+        // - Chemicals must be in Tanker
+        // - Food must be in Closed
+        // --------------------------------------------------------------
+        boolean isSafe = goodsBogies.stream().allMatch(bogie -> {
 
-        // Validate inputs
-        boolean trainIdValid = trainIdPattern.matcher(trainId).matches();
-        boolean cargoCodeValid = cargoCodePattern.matcher(cargoCode).matches();
+            if (bogie.cargo.equalsIgnoreCase("Chemicals")) {
+                return bogie.type.equalsIgnoreCase("Tanker");
+            }
 
-        // Display results
-        System.out.println("\nValidation Results:");
-        System.out.println("Train ID Valid: " + trainIdValid);
-        System.out.println("Cargo Code Valid: " + cargoCodeValid);
+            if (bogie.cargo.equalsIgnoreCase("Food")) {
+                return bogie.type.equalsIgnoreCase("Closed");
+            }
 
-        System.out.println("\nUC11 validation completed...");
-        scanner.close();
+            // Default: safe for other cargo types
+            return true;
+        });
+
+        // --------------------------------------------------------------
+        // Step 3: Display safety status
+        // --------------------------------------------------------------
+        if (isSafe) {
+            System.out.println("All goods bogies are SAFETY COMPLIANT ✅");
+        } else {
+            System.out.println("Safety violation detected ❌");
+        }
     }
 }
