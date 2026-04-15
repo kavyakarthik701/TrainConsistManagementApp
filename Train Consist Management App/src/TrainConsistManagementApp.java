@@ -1,87 +1,68 @@
 /**
- * =========================================================================
- * MAIN CLASS - UseCase14TrainConsistMgmnt
- * =========================================================================
- *
- * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
- *
- * Description:
- * This program prevents creation of passenger bogies with
- * invalid seating capacity using a custom exception.
- *
- * Features:
- * - Defines a custom exception
- * - Validates capacity inside constructor
- * - Throws exception if capacity <= 0
- * - Ensures safe execution (no crash)
- *
- * =========================================================================
+ * ============================================================================
+ * MAIN CLASS - UseCase19TrainConsistMgmnt
+ * ============================================================================
+ * * Use Case 19: Binary Search for Bogie ID
+ * * Description:
+ * This class demonstrates searching for a specific bogie ID
+ * using an optimized Binary Search algorithm on sorted data.
+ * * * At this stage, the application:
+ * - Creates a sorted array of bogie IDs
+ * - Accepts a search key
+ * - Implements divide-and-conquer logic (low, high, mid)
+ * - Uses compareTo() for String comparison
+ * - Displays the search result
+ * * * @author Developer
+ * @version 19.0
  */
+public class UseCase19TrainConsistMgmnt {
 
-public class TrainConsistManagementApp {
-
-    // ================================================================
-    // CUSTOM EXCEPTION CLASS
-    // ================================================================
-    // This exception is thrown when invalid capacity is given
-    static class InvalidCapacityException extends Exception {
-
-        // Constructor to pass custom error message
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
-    }
-
-    // ================================================================
-    // PASSENGER BOGIE CLASS
-    // ================================================================
-    static class PassengerBogie {
-
-        String type;     // Type of bogie (e.g., Sleeper, AC)
-        int capacity;    // Seating capacity
-
-        // Constructor with validation
-        public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-
-            // Validate capacity
-            if (capacity <= 0) {
-                // Throw custom exception if invalid
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-
-            // Assign values if valid
-            this.type = type;
-            this.capacity = capacity;
-        }
-
-        // Method to display bogie details
-        public void display() {
-            System.out.println("Created Bogie: " + type + " -> " + capacity);
-        }
-    }
-
-    // ================================================================
-    // MAIN METHOD
-    // ================================================================
     public static void main(String[] args) {
 
-        // Try block to handle exceptions safely
-        try {
-            // Valid bogie creation
-            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-            b1.display();
+        System.out.println("==============================================");
+        System.out.println(" UC19 - Binary Search for Bogie ID ");
+        System.out.println("==============================================\n");
 
-            // Invalid bogie creation (will throw exception)
-            PassengerBogie b2 = new PassengerBogie("AC", 0);
-            b2.display(); // This line will not execute
+        // PRECONDITION: The data MUST be sorted
+        String[] sortedBogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchKey = "BG412";
 
-        } catch (InvalidCapacityException e) {
+        System.out.println("Sorted Bogie IDs: ");
+        for (String id : sortedBogieIds) System.out.print(id + " ");
+        System.out.println("\nSearching for: " + searchKey + "\n");
 
-            // Handle exception and print message
-            System.out.println("Error: " + e.getMessage());
+        // ---- BINARY SEARCH LOGIC ----
+        int low = 0;
+        int high = sortedBogieIds.length - 1;
+        int foundIndex = -1;
+
+        while (low <= high) {
+            // Calculate the middle index
+            int mid = low + (high - low) / 2;
+
+            // Compare searchKey with the middle element
+            int comparison = searchKey.compareTo(sortedBogieIds[mid]);
+
+            if (comparison == 0) {
+                // Key found!
+                foundIndex = mid;
+                break;
+            } else if (comparison > 0) {
+                // Key is in the upper half
+                low = mid + 1;
+            } else {
+                // Key is in the lower half
+                high = mid - 1;
+            }
         }
 
-        // Program continues normally
-        System.out.println("UC14 exception handling completed...");
+        // Display result
+        if (foundIndex != -1) {
+            System.out.println("SUCCESS: Bogie " + searchKey + " found at position " + (foundIndex + 1) + ".");
+        } else {
+            System.out.println("FAILURE: Bogie " + searchKey + " not found in the consist.");
+        }
+
+        System.out.println("\nUC19 binary search completed...");
     }
 }
