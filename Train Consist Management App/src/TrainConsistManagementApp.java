@@ -1,87 +1,44 @@
+import java.util.Arrays;
+
 /**
- * =========================================================================
- * MAIN CLASS - UseCase14TrainConsistMgmnt
- * =========================================================================
- *
- * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
- *
- * Description:
- * This program prevents creation of passenger bogies with
- * invalid seating capacity using a custom exception.
- *
- * Features:
- * - Defines a custom exception
- * - Validates capacity inside constructor
- * - Throws exception if capacity <= 0
- * - Ensures safe execution (no crash)
- *
- * =========================================================================
+ * ============================================================================
+ * MAIN CLASS - UseCase17TrainConsistMgmnt
+ * ============================================================================
+ * * Use Case 17: Sort Bogie Names Using Arrays.sort()
+ * * Description:
+ * This class demonstrates sorting of bogie type names
+ * alphabetically using Java's built-in Arrays.sort() method.
+ * * At this stage, the application:
+ * - Creates an array of bogie names
+ * - Uses Arrays.sort() for sorting
+ * - Displays sorted results
+ * * This maps optimized sorting using Java library utilities.
+ * * @author Developer
+ * @version 17.0
  */
+public class UseCase17TrainConsistMgmnt {
 
-public class TrainConsistManagementApp {
-
-    // ================================================================
-    // CUSTOM EXCEPTION CLASS
-    // ================================================================
-    // This exception is thrown when invalid capacity is given
-    static class InvalidCapacityException extends Exception {
-
-        // Constructor to pass custom error message
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
-    }
-
-    // ================================================================
-    // PASSENGER BOGIE CLASS
-    // ================================================================
-    static class PassengerBogie {
-
-        String type;     // Type of bogie (e.g., Sleeper, AC)
-        int capacity;    // Seating capacity
-
-        // Constructor with validation
-        public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-
-            // Validate capacity
-            if (capacity <= 0) {
-                // Throw custom exception if invalid
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-
-            // Assign values if valid
-            this.type = type;
-            this.capacity = capacity;
-        }
-
-        // Method to display bogie details
-        public void display() {
-            System.out.println("Created Bogie: " + type + " -> " + capacity);
-        }
-    }
-
-    // ================================================================
-    // MAIN METHOD
-    // ================================================================
     public static void main(String[] args) {
 
-        // Try block to handle exceptions safely
-        try {
-            // Valid bogie creation
-            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-            b1.display();
+        System.out.println("==============================================");
+        System.out.println(" UC17 - Sort Bogie Names Using Arrays.sort() ");
+        System.out.println("==============================================\n");
 
-            // Invalid bogie creation (will throw exception)
-            PassengerBogie b2 = new PassengerBogie("AC", 0);
-            b2.display(); // This line will not execute
+        // Create an array of bogie names
+        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
 
-        } catch (InvalidCapacityException e) {
+        // Display original bogie names
+        System.out.println("Original Bogie Names:");
+        System.out.println(Arrays.toString(bogieNames));
 
-            // Handle exception and print message
-            System.out.println("Error: " + e.getMessage());
-        }
+        // Use Arrays.sort() for alphabetical sorting
+        // This is an optimized Dual-Pivot Quicksort for primitives/objects
+        Arrays.sort(bogieNames);
 
-        // Program continues normally
-        System.out.println("UC14 exception handling completed...");
+        // Display sorted results (Alphabetical)
+        System.out.println("\nSorted Bogie Names (Alphabetical):");
+        System.out.println(Arrays.toString(bogieNames));
+
+        System.out.println("\nUC17 sorting completed...");
     }
 }
