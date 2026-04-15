@@ -1,87 +1,62 @@
 /**
- * =========================================================================
- * MAIN CLASS - UseCase14TrainConsistMgmnt
- * =========================================================================
- *
- * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
- *
- * Description:
- * This program prevents creation of passenger bogies with
- * invalid seating capacity using a custom exception.
- *
- * Features:
- * - Defines a custom exception
- * - Validates capacity inside constructor
- * - Throws exception if capacity <= 0
- * - Ensures safe execution (no crash)
- *
- * =========================================================================
+ * ============================================================================
+ * MAIN CLASS - UseCase16TrainConsistMgmnt
+ * ============================================================================
+ * * Use Case 16: Sort Passenger Bogies by Capacity
+ * * Description:
+ * This class demonstrates manual sorting of passenger
+ * bogie capacities using the Bubble Sort algorithm
+ * instead of built-in sorting utilities.
+ * * At this stage, the application:
+ * - Creates an array of capacities
+ * - Compares adjacent values
+ * - Swaps values when required
+ * - Repeats passes until sorted
+ * - Displays sorted result
+ * * This maps algorithmic sorting logic using Bubble Sort.
+ * * @author Developer
+ * @version 16.0
  */
+public class UseCase16TrainConsistMgmnt {
 
-public class TrainConsistManagementApp {
-
-    // ================================================================
-    // CUSTOM EXCEPTION CLASS
-    // ================================================================
-    // This exception is thrown when invalid capacity is given
-    static class InvalidCapacityException extends Exception {
-
-        // Constructor to pass custom error message
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
-    }
-
-    // ================================================================
-    // PASSENGER BOGIE CLASS
-    // ================================================================
-    static class PassengerBogie {
-
-        String type;     // Type of bogie (e.g., Sleeper, AC)
-        int capacity;    // Seating capacity
-
-        // Constructor with validation
-        public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-
-            // Validate capacity
-            if (capacity <= 0) {
-                // Throw custom exception if invalid
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-
-            // Assign values if valid
-            this.type = type;
-            this.capacity = capacity;
-        }
-
-        // Method to display bogie details
-        public void display() {
-            System.out.println("Created Bogie: " + type + " -> " + capacity);
-        }
-    }
-
-    // ================================================================
-    // MAIN METHOD
-    // ================================================================
     public static void main(String[] args) {
 
-        // Try block to handle exceptions safely
-        try {
-            // Valid bogie creation
-            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-            b1.display();
+        System.out.println("==============================================");
+        System.out.println(" UC16 - Manual Sorting using Bubble Sort ");
+        System.out.println("==============================================\n");
 
-            // Invalid bogie creation (will throw exception)
-            PassengerBogie b2 = new PassengerBogie("AC", 0);
-            b2.display(); // This line will not execute
+        // Create array of passenger bogie capacities
+        int[] capacities = {72, 56, 24, 70, 60};
 
-        } catch (InvalidCapacityException e) {
+        // Display original order
+        System.out.println("Original Capacities:");
+        for (int c : capacities) {
+            System.out.print(c + " ");
+        }
+        System.out.println(); // For spacing
 
-            // Handle exception and print message
-            System.out.println("Error: " + e.getMessage());
+        // ---- BUBBLE SORT LOGIC ----
+        // Outer loop controls number of passes
+        for (int i = 0; i < capacities.length - 1; i++) {
+            // Inner loop performs the adjacent comparisons
+            // capacities.length - 1 - i optimizes by not re-checking sorted ends
+            for (int j = 0; j < capacities.length - 1 - i; j++) {
+                // Compare adjacent values
+                if (capacities[j] > capacities[j + 1]) {
+                    // Swap values if they are in the wrong order (Ascending)
+                    int temp = capacities[j];
+                    capacities[j] = capacities[j + 1];
+                    capacities[j + 1] = temp;
+                }
+            }
         }
 
-        // Program continues normally
-        System.out.println("UC14 exception handling completed...");
+        // Display sorted result
+        System.out.println("\nSorted Capacities (Ascending):");
+        for (int c : capacities) {
+            System.out.print(c + " ");
+        }
+        
+        System.out.println("\n\nUC16 sorting completed...");
     }
 }
