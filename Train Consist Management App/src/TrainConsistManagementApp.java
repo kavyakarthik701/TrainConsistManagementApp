@@ -1,87 +1,45 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * =========================================================================
- * MAIN CLASS - UseCase14TrainConsistMgmnt
- * =========================================================================
- *
- * Use Case 14: Handle Invalid Bogie Capacity (Custom Exception)
- *
- * Description:
- * This program prevents creation of passenger bogies with
- * invalid seating capacity using a custom exception.
- *
- * Features:
- * - Defines a custom exception
- * - Validates capacity inside constructor
- * - Throws exception if capacity <= 0
- * - Ensures safe execution (no crash)
- *
- * =========================================================================
+ * ============================================================================
+ * MAIN CLASS - UseCase1TrainConsistMgmnt
+ * ============================================================================
+ * * Use Case 1: Initialize Train and Display Consist Summary
+ * * Description:
+ * This class represents the entry point of the Train Consist 
+ * Management Application.
+ * * At this stage, the application:
+ * - Creates an empty train consist
+ * - Uses a dynamic List to store bogies
+ * - Displays initial bogie count
+ * - Prints the current state of the train
+ * * This use case introduces collection initialization and
+ * basic program startup flow.
+ * * @author Developer
+ * @version 1.0
  */
+public class UseCase1TrainConsistMgmnt {
 
-public class TrainConsistManagementApp {
-
-    // ================================================================
-    // CUSTOM EXCEPTION CLASS
-    // ================================================================
-    // This exception is thrown when invalid capacity is given
-    static class InvalidCapacityException extends Exception {
-
-        // Constructor to pass custom error message
-        public InvalidCapacityException(String message) {
-            super(message);
-        }
-    }
-
-    // ================================================================
-    // PASSENGER BOGIE CLASS
-    // ================================================================
-    static class PassengerBogie {
-
-        String type;     // Type of bogie (e.g., Sleeper, AC)
-        int capacity;    // Seating capacity
-
-        // Constructor with validation
-        public PassengerBogie(String type, int capacity) throws InvalidCapacityException {
-
-            // Validate capacity
-            if (capacity <= 0) {
-                // Throw custom exception if invalid
-                throw new InvalidCapacityException("Capacity must be greater than zero");
-            }
-
-            // Assign values if valid
-            this.type = type;
-            this.capacity = capacity;
-        }
-
-        // Method to display bogie details
-        public void display() {
-            System.out.println("Created Bogie: " + type + " -> " + capacity);
-        }
-    }
-
-    // ================================================================
-    // MAIN METHOD
-    // ================================================================
     public static void main(String[] args) {
 
-        // Try block to handle exceptions safely
-        try {
-            // Valid bogie creation
-            PassengerBogie b1 = new PassengerBogie("Sleeper", 72);
-            b1.display();
+        // Display welcome banner
+        System.out.println("================================================");
+        System.out.println(" ===  Train Consist Management App  === ");
+        System.out.println("================================================\n");
 
-            // Invalid bogie creation (will throw exception)
-            PassengerBogie b2 = new PassengerBogie("AC", 0);
-            b2.display(); // This line will not execute
+        // Create a dynamic list to store train bogies (Strings representing bogie names/types)
+        List<String> trainConsist = new ArrayList<>();
 
-        } catch (InvalidCapacityException e) {
-
-            // Handle exception and print message
-            System.out.println("Error: " + e.getMessage());
-        }
-
-        // Program continues normally
-        System.out.println("UC14 exception handling completed...");
+        // Display initial consist information
+        System.out.println("Train initialized successfully...");
+        
+        // Display initial bogie count (should be 0)
+        System.out.println("Initial bogie count: " + trainConsist.size());
+        
+        // Print the current state of the train
+        System.out.println("Current Train Consist: " + trainConsist);
+        
+        System.out.println("\nUC1 startup flow completed.");
     }
 }
